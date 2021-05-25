@@ -15,7 +15,9 @@ limitations under the License.
 */
 package main
 
-import "hawk.wie.gg/cmd"
+import (
+	"hawk.wie.gg/cmd"
+)
 
 func main() {
 	cmd.Execute()

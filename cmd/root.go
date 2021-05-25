@@ -18,24 +18,22 @@ package cmd
 import (
 	"fmt"
 	"os"
+
 	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
+	"hawk.wie.gg/db"
 )
 
 var cfgFile string
+var dbFile string
 
-// rootCmd represents the base command when called without any subcommands
+// RootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "hawk.wie.gg",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "hawk",
+	Short: "Hawk is a command line time tracker",
+	Long:  "Hawk is a command line time tracker that helps you easily manage recording while coding without leaving your favorite tools.\nIt has extensions for VS Code and Atom, and smart features to help you remember updating your times.",
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -54,7 +52,10 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hawk.wie.gg.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hawk.yaml)")
+	rootCmd.PersistentFlags().StringVar(&dbFile, "db", "", "Define a custom SQLite database path (default is $HOME/db.sqlite)")
+
+	db.CreateDB(dbFile)
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -71,9 +72,9 @@ func initConfig() {
 		home, err := homedir.Dir()
 		cobra.CheckErr(err)
 
-		// Search config in home directory with name ".hawk.wie.gg" (without extension).
+		// Search config in home directory with name ".hawk" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".hawk.wie.gg")
+		viper.SetConfigName(".hawk")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
